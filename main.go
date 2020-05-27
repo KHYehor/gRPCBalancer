@@ -4,7 +4,6 @@ import (
 	calculate "github.com/KHYehor/gRPCBalancer/src/grpc"
 	server "github.com/KHYehor/gRPCBalancer/src/server"
 	"google.golang.org/grpc"
-	"sync"
 )
 
 var addresses = []string{"", "", ""}
@@ -24,5 +23,5 @@ func initClients() *[]calculate.CalculateMatrixClient {
 
 func main() {
 	clients := initClients()
-	server.Server{sync.Mutex, 0, clients}
+	s := server.New(clients)
 }
