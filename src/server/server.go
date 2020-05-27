@@ -6,6 +6,12 @@ import (
 	"sync"
 )
 
+func New(servers *[]grpc.CalculateMatrixClient) *Server {
+	return &Server{
+		servers: servers,
+	}
+}
+
 type Server struct {
 	mutex sync.Mutex
 	routingServer int
