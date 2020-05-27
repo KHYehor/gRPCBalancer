@@ -6,15 +6,10 @@ import (
 	"sync"
 )
 
-type Structures struct {
-	server1 string "server1"
-	server2 string "server2"
-	server3 string "server3"
-}
-
 type Server struct {
 	mutex sync.Mutex
 	routingServer int
+	servers *[]grpc.CalculateMatrixClient
 }
 
 func (s *Server) MatrixSum(ctx context.Context, req *grpc.MatrixRequest) (*grpc.MatrixResponse, error) {
