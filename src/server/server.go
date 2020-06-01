@@ -35,7 +35,7 @@ func (s *LoadBalancer) MatrixMul(ctx context.Context, req *calculate.MatrixReque
 	return nil, nil
 }
 
-func (s *LoadBalancer) initServers(ctx context.Context, addresses []string) {
+func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
 	s.servers = ring.New(len(addresses))
 	for _, address := range addresses {
 		conn, err := grpc.Dial(address)
@@ -53,7 +53,7 @@ func (s *LoadBalancer) initServers(ctx context.Context, addresses []string) {
 	}
 }
 
-func (s *LoadBalancer) startCheckHealth(ctx context.Context, addresses []string) {
+func (s *LoadBalancer) StartCheckHealth(ctx context.Context, addresses []string) {
 	conn, err := grpc.Dial("")
 	if err != nil {
 		panic("error")

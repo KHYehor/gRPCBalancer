@@ -23,5 +23,6 @@ func main() {
 	grpcServer := grpc.NewServer()
 	s := server.LoadBalancer{}
 	s.initServers(addresses)
+
 	calculate.RegisterCalculateMatrixServer(grpcServer, s)
 }
