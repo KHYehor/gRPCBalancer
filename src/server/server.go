@@ -11,10 +11,6 @@ import (
 	"time"
 )
 
-func NewLoadBalabcer() *LoadBalancer {
-	return &LoadBalancer{}
-}
-
 type Servers struct {
 	address string
 	grpcServer calculate.CalculateMatrixClient
