@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"github.com/KHYehor/gRPCBalancer/src/grpc/calculate"
 	"github.com/KHYehor/gRPCBalancer/src/server"
 	"google.golang.org/grpc"
-	"log"
 	"net"
 )
 
@@ -14,15 +14,22 @@ var addresses = []string{
 	"",
 }
 
-func main() {
-	lis, err := net.Listen("tcp", ":32625")
-	if err != nil {
-		log.Fatal(err)
-	}
+func startListening(address string) {
+	lis, err := net.Listen("tcp", address)
 	defer lis.Close()
-	grpcServer := grpc.NewServer()
-	s := server.LoadBalancer{}
-	s.initServers(addresses)
+	if err != nil {
+		panic(err)
+	}
+}
 
+func startLoadBalancer(addresses []string) {
+	grpcServer := grpc.NewServer()
+	s := &server.LoadBalancer{}
+	s.InitServers(context.Background(), addresses)
 	calculate.RegisterCalculateMatrixServer(grpcServer, s)
+}
+
+func main() {
+	startListening("")
+	startLoadBalancer(addresses)
 }
