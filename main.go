@@ -9,20 +9,10 @@ import (
 	"net"
 )
 
-var addresses = []string{"", "", ""}
-
-func initClients() *ring.Ring {
-	cliets2 := ring.New(len(addresses))
-	for _, elemet := range addresses {
-		conn, err := grpc.Dial(elemet)
-		if err != nil {
-			panic("error")
-		}
-		defer conn.Close()
-		cliets2.Value = calculate.NewCalculateMatrixClient(conn)
-		cliets2.Next()
-	}
-	return cliets2
+var addresses = []string{
+	"",
+	"",
+	"",
 }
 
 func main() {
@@ -31,9 +21,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer lis.Close()
-
-	clients := initClients()
 	grpcServer := grpc.NewServer()
-	s := server.New(clients)
+	s := server.NewLoadBalabcer()
+	s.initServers(addresses)
 	calculate.RegisterCalculateMatrixServer(grpcServer, s)
 }
