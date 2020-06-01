@@ -2,11 +2,12 @@ package server
 
 import (
 	"context"
-	"github.com/KHYehor/gRPCBalancer/src/grpc"
+	"github.com/KHYehor/gRPCBalancer/src/grpc/calculate"
 	"sync"
+	"container/ring"
 )
 
-func New(servers *[]grpc.CalculateMatrixClient) *Server {
+func New(servers *[]calculate.CalculateMatrixClient) *Server {
 	return &Server{
 		servers: servers,
 	}
@@ -15,16 +16,17 @@ func New(servers *[]grpc.CalculateMatrixClient) *Server {
 type Server struct {
 	mutex sync.Mutex
 	routingServer int
-	servers *[]grpc.CalculateMatrixClient
+	serverss *[]*ring.Ring
+	servers *[]calculate.CalculateMatrixClient
 }
 
-func (s *Server) MatrixSum(ctx context.Context, req *grpc.MatrixRequest) (*grpc.MatrixResponse, error) {
+func (s *Server) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
 	s.mutex.Lock()
 	s.mutex.Unlock()
 	return nil, nil
 }
 
-func (s *Server) MatrixMul(ctx context.Context, req *grpc.MatrixRequest) (*grpc.MatrixResponse, error) {
+func (s *Server) MatrixMul(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
 	s.mutex.Lock()
 	s.mutex.Unlock()
 	return nil, nil

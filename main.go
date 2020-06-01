@@ -1,9 +1,11 @@
 package main
 
 import (
-	calculate "github.com/KHYehor/gRPCBalancer/src/grpc"
+	"github.com/KHYehor/gRPCBalancer/src/grpc/calculate"
 	server "github.com/KHYehor/gRPCBalancer/src/server"
 	"google.golang.org/grpc"
+	"log"
+	"net"
 )
 
 var addresses = []string{"", "", ""}
@@ -15,6 +17,7 @@ func initClients() *[]calculate.CalculateMatrixClient {
 		if err != nil {
 			panic("error")
 		}
+		defer conn.Close()
 		client := calculate.NewCalculateMatrixClient(conn)
 		clients = append(clients, client)
 	}
@@ -22,6 +25,14 @@ func initClients() *[]calculate.CalculateMatrixClient {
 }
 
 func main() {
+	lis, err := net.Listen("tcp", ":32625")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer lis.Close()
+
 	clients := initClients()
+	grpcServer := grpc.NewServer()
 	s := server.New(clients)
+	calculate.RegisterCalculateMatrixServer(grpcServer, s)
 }

@@ -4,7 +4,7 @@
 // 	protoc        v3.12.1
 // source: calculate.proto
 
-package grpc
+package calculate
 
 import (
 	context "context"
