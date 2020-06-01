@@ -7,7 +7,7 @@ import (
 	"container/ring"
 )
 
-func New(servers *[]calculate.CalculateMatrixClient) *Server {
+func New(servers *ring.Ring) *Server {
 	return &Server{
 		servers: servers,
 	}
@@ -16,8 +16,7 @@ func New(servers *[]calculate.CalculateMatrixClient) *Server {
 type Server struct {
 	mutex sync.Mutex
 	routingServer int
-	serverss *[]*ring.Ring
-	servers *[]calculate.CalculateMatrixClient
+	servers *ring.Ring
 }
 
 func (s *Server) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
