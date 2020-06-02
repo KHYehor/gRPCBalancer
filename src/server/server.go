@@ -1,13 +1,13 @@
 package server
 
 import (
+	"container/ring"
 	"context"
 	"fmt"
-	"google.golang.org/grpc"
 	"github.com/KHYehor/gRPCBalancer/src/grpc/calculate"
 	"github.com/KHYehor/grpcBalancer/src/grpc/health"
+	"google.golang.org/grpc"
 	"sync"
-	"container/ring"
 	"time"
 )
 
@@ -39,17 +39,14 @@ func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
 	s.servers = ring.New(len(addresses))
 	for _, address := range addresses {
 		conn, err := grpc.Dial(address)
-		defer conn.Close()
-		if err != nil {
-			fmt.Print("Error")
-			return
+		if err == nil {
+			server := Servers{
+				grpcServer: calculate.NewCalculateMatrixClient(conn),
+				address: address,
+			}
+			s.servers.Value = server
+			s.servers.Next()
 		}
-		server := Servers{
-			grpcServer: calculate.NewCalculateMatrixClient(conn),
-			address: address,
-		}
-		s.servers.Value = server
-		s.servers.Next()
 	}
 }
 

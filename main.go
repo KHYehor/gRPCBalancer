@@ -14,22 +14,27 @@ var addresses = []string{
 	"",
 }
 
-func startListening(address string) {
+func getAddressListener(address string) (net.Listener, error) {
 	lis, err := net.Listen("tcp", address)
-	defer lis.Close()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
+	return lis, nil
 }
 
-func startLoadBalancer(addresses []string) {
+func getLoadBalancer(addresses []string) *grpc.Server {
 	grpcServer := grpc.NewServer()
 	s := &server.LoadBalancer{}
 	s.InitServers(context.Background(), addresses)
 	calculate.RegisterCalculateMatrixServer(grpcServer, s)
+	return grpcServer
 }
 
 func main() {
-	startListening("")
-	startLoadBalancer(addresses)
+	listener, err := getAddressListener("127.0.0.1:5000")
+	if err != nil {
+		panic("Can't listen address")
+	}
+	lb := getLoadBalancer(addresses)
+	lb.Serve(listener)
 }
