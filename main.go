@@ -8,33 +8,40 @@ import (
 	"net"
 )
 
+// List of all available servers for routing
 var addresses = []string{
 	"",
 	"",
 	"",
 }
 
-func getAddressListener(address string) (net.Listener, error) {
-	lis, err := net.Listen("tcp", address)
-	if err != nil {
-		return nil, err
-	}
-	return lis, nil
+var healthAddresses = []string{
+	"",
+	"",
+	"",
 }
 
-func getLoadBalancer(addresses []string) *grpc.Server {
+// start Load Balancer with routing
+func startGrpcBalancer(host string, addresses []string) (error) {
+	// Start tcp listening port
+	lis, err := net.Listen("tcp", host)
+	if err != nil {
+		return err
+	}
+	// Create server service
 	grpcServer := grpc.NewServer()
 	s := &server.LoadBalancer{}
+	// Init servers for routing
 	s.InitServers(context.Background(), addresses)
 	calculate.RegisterCalculateMatrixServer(grpcServer, s)
-	return grpcServer
+	// Attach listener to server
+	grpcServer.Serve(lis)
+	return nil
 }
 
 func main() {
-	listener, err := getAddressListener("127.0.0.1:5000")
+	err := startGrpcBalancer("127.0.0.1:5000", addresses)
 	if err != nil {
-		panic("Can't listen address")
+		panic(err)
 	}
-	lb := getLoadBalancer(addresses)
-	lb.Serve(listener)
 }

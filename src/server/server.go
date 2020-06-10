@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/KHYehor/gRPCBalancer/src/grpc/calculate"
-	"github.com/KHYehor/grpcBalancer/src/grpc/health"
+	"github.com/KHYehor/gRPCBalancer/src/grpc/health"
 	"google.golang.org/grpc"
 	"sync"
 	"time"
