@@ -41,11 +41,8 @@ func (s *LoadBalancer) MatrixMul(ctx context.Context, req *calculate.MatrixReque
 
 func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
 	s.servers = ring.New(len(addresses))
-	fmt.Println("here1")
 	for _, address := range addresses {
-		fmt.Println("here2")
-		grpc.WithInsecure()
-		conn, err := grpc.Dial(address)
+		conn, err := grpc.Dial(address, grpc.WithInsecure())
 		if err != nil {
 			fmt.Println(err)
 			fmt.Println(err)
