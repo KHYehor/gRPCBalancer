@@ -47,6 +47,7 @@ func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
 		conn, err := grpc.Dial(address)
 		if err != nil {
 			fmt.Println(err)
+			fmt.Println(err)
 			return
 		}
 		server := Servers{
