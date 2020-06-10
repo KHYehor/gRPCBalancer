@@ -23,9 +23,8 @@ type LoadBalancer struct {
 
 func (s *LoadBalancer) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
 	s.mutex.Lock()
-	//server := s.servers.Value
-	//fmt.Println(server)
-	fmt.Println("here")
+	server := s.servers.Value
+	fmt.Println(server)
 	s.mutex.Unlock()
 	matrix := []*calculate.Array{}
 	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
