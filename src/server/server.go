@@ -44,6 +44,7 @@ func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
 	fmt.Println("here1")
 	for _, address := range addresses {
 		fmt.Println("here2")
+		grpc.WithInsecure()
 		conn, err := grpc.Dial(address)
 		if err != nil {
 			fmt.Println(err)
