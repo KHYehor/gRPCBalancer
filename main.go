@@ -25,6 +25,7 @@ func startGrpcBalancer(host string, addresses []string) (error) {
 		return err
 	}
 	// Create server service
+	grpc.WithInsecure()
 	grpcServer := grpc.NewServer()
 	s := &server.LoadBalancer{}
 	// Init servers for routing
