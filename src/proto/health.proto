@@ -6,6 +6,8 @@ service checkHealth {
   rpc health (healthRequest) returns (healthResponse) {}
 }
 
-message healthResponse {}
+message healthResponse {
+  uint64 memoryAllocated = 1;
+}
 
 message healthRequest {}
