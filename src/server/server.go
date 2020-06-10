@@ -23,10 +23,15 @@ type LoadBalancer struct {
 
 func (s *LoadBalancer) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
 	s.mutex.Lock()
-	server := s.servers.Value
-	fmt.Println(server)
+	//server := s.servers.Value
+	//fmt.Println(server)
+	fmt.Println("here")
 	s.mutex.Unlock()
-	return nil, nil
+	matrix := []*calculate.Array{}
+	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
+	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
+	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
+	return &calculate.MatrixResponse{Matrix: matrix}, nil
 }
 
 func (s *LoadBalancer) MatrixMul(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
@@ -59,9 +64,9 @@ func (s *LoadBalancer) StartCheckHealth(ctx context.Context, addresses []string)
 	healthChecker := health.NewCheckHealthClient(conn)
 	request := &health.HealthRequest{}
 	for range time.Tick(time.Second * 1) {
-		_, err := healthChecker.Health(context.Background(), request)
+		/* response */_, err := healthChecker.Health(context.Background(), request)
 		if err != nil {
-			// rebuild ring function
+			//fmt.Println(response)
 		}
 	}
 }
