@@ -21,40 +21,47 @@ type LoadBalancer struct {
 	servers *ring.Ring
 }
 
-func (s *LoadBalancer) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
+func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
+	s.servers = ring.New(len(addresses))
+	for _, address := range addresses {
+		conn, err := grpc.Dial(address, grpc.WithInsecure())
+		if err == nil {
+			server := Servers {
+				grpcServer: calculate.NewCalculateMatrixClient(conn),
+				address: address,
+			}
+			s.servers.Value = &server
+			s.servers.Next()
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func (s *LoadBalancer) getServerFromPool(ctx context.Context) (calculate.CalculateMatrixClient) {
 	s.mutex.Lock()
-	server := s.servers.Value
-	fmt.Println(server)
+	value := s.servers.Value.(Servers).grpcServer
+	s.servers.Next()
 	s.mutex.Unlock()
-	matrix := []*calculate.Array{}
-	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
-	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
-	matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
-	return &calculate.MatrixResponse{Matrix: matrix}, nil
+	return value
+}
+
+func (s *LoadBalancer) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
+	server := s.getServerFromPool(ctx)
+	request := &calculate.MatrixRequest{Matrix1: req.GetMatrix1(), Matrix2: req.GetMatrix2()}
+	response, err := server.MatrixSum(ctx, request)
+	return response, err
+	//matrix := []*calculate.Array{}
+	//matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
+	//matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
+	//matrix = append(matrix, &calculate.Array{Digit: []float64{1, 2, 3}})
+	//return &calculate.MatrixResponse{Matrix: matrix}, nil
 }
 
 func (s *LoadBalancer) MatrixMul(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
 	s.mutex.Lock()
 	s.mutex.Unlock()
 	return nil, nil
-}
-
-func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
-	s.servers = ring.New(len(addresses))
-	for _, address := range addresses {
-		conn, err := grpc.Dial(address, grpc.WithInsecure())
-		if err != nil {
-			fmt.Println(err)
-			fmt.Println(err)
-			return
-		}
-		server := Servers{
-			grpcServer: calculate.NewCalculateMatrixClient(conn),
-			address: address,
-		}
-		s.servers.Value = server
-		s.servers.Next()
-	}
 }
 
 func (s *LoadBalancer) StartCheckHealth(ctx context.Context, addresses []string) {
