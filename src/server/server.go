@@ -48,6 +48,7 @@ func (s *LoadBalancer) getServerFromPool(ctx context.Context) (calculate.Calcula
 
 func (s *LoadBalancer) MatrixSum(ctx context.Context, req *calculate.MatrixRequest) (*calculate.MatrixResponse, error) {
 	server := s.getServerFromPool(ctx)
+	fmt.Println(req)
 	fmt.Println(req.Matrix1)
 	fmt.Println(req.Matrix2)
 	request := &calculate.MatrixRequest{Matrix1: req.GetMatrix1(), Matrix2: req.GetMatrix2()}
