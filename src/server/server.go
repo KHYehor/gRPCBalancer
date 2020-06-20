@@ -30,7 +30,7 @@ func (s *LoadBalancer) InitServers(ctx context.Context, addresses []string) {
 				grpcServer: calculate.NewCalculateMatrixClient(conn),
 				address: address,
 			}
-			s.servers.Value = &server
+			s.servers.Value = server
 			s.servers.Next()
 		} else {
 			fmt.Println(err)
