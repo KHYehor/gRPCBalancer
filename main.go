@@ -10,11 +10,15 @@ import (
 
 // List of all available servers for routing
 var addresses = []string{
-	"127.0.0.1:5000",
+	"grpc_network:5000",
+	"grpc_network:5001",
+	"grpc_network:5002",
 }
 
 var healthAddresses = []string{
-	"127.0.0.1:6000",
+	"grpc_network:6000",
+	"grpc_network:6001",
+	"grpc_network:6002",
 }
 
 // start Load Balancer with routing
@@ -36,7 +40,7 @@ func startGrpcBalancer(host string, addresses []string) (error) {
 }
 
 func main() {
-	err := startGrpcBalancer("127.0.0.1:3000", addresses)
+	err := startGrpcBalancer("grpc_network:4000", addresses)
 	if err != nil {
 		panic(err)
 	}
