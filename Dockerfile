@@ -6,6 +6,6 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 
 RUN go get -u -v -f all
-CMD go build -o lb
+RUN go build -o lb
 ENTRYPOINT ["./lb"]
 
